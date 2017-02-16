@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Прогрессивный рендериг</title>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--<link rel="stylesheet" href="node_modules/shower-ribbon/styles/screen-4x3.css">-->
+  <link rel="stylesheet" href="node_modules/shower-ribbon/styles/screen-16x10.css">
+  <style>
+    .shadowed {
+      color: white;
+      text-shadow: 0 0 20px black;
+    }
+    .slide::after {
+      background: url(pictures/ribbon.svg) no-repeat;
+    }
+  </style>
+</head>
+<body class="shower full">
+
+<header class="caption">
+  <h1>
+    Прогрессивный рендериг
+  </h1>
+  <p>
+    Максим Четверикóв
+  </p>
+</header>
+
+<section class="slide" id="cover">
+  <img class="cover" src="pictures/cover.jpg" height="100%">
+
+  <header>
+    <h2 class="shadowed">
+      Прогрессивный рендеринг
+    </h2>
+    <p class="shadowed">
+      <br>
+      Максим Четверикóв (ma.chetverikov@gmail.com)
+    </p>
+
+  </header>
+
+  <style>
+    #cover header {
+      width: 100%;
+      text-align: center;
+      margin-top: 300px;
+      left: 90px;
+    }
+
+    #cover p {
+      margin: -25px 0 0;
+      text-align: center;
+      color: #dcdcdc;
+      font-size: 30px;
+    }
+
+    #cover h2 {
+      font-size: 80px;
+      color: #FFF;
+      margin-top: 300px;
+    }
+  </style>
+</section>
+
+<section class="slide" id="about-me">
+  <h2>Немного обо мне</h2>
+  <img src="pictures/photo.jpg">
+  <ul>
+    <li>Пробовал Python, ActionScript, Perl и многое другое...</li>
+    <li>Около 6 лет работал PHP разработчиком</li>
+    <li>Уже больше 3-х лет работаю Node.js разработчиком</li>
+    <li>Сейчас работаю в Aggregion Ltd.</li>
+    <li>@chetverikov на <a href="https://github.com/chetverikov" target="_blank">GitHub</a> и Telegram</li>
+  </ul>
+  <style>
+    #about-me img {
+      position: absolute;
+      top: 115px;
+      right: 100px;
+      width: 210px;
+    }
+  </style>
+</section>
+
+<section class="slide">
+  <h2>О чем это я ...</h2>
+  <ul>
+    <li>О самом популярном варианте серверного рендера</li>
+    <li>Что в нем плохого, и как его улучшить</li>
+    <li>Немного о client-side рендере</li>
+  </ul>
+</section>
+
+<section class="slide">
+  <h2 class="shout" style="font-size: 100px;">Серверный рендериг</h2>
+</section>
+
+<section class="slide">
+  <h2>Пример современного рендера</h2>
+  <pre>
+    <code class="javascript" style="margin-left: -190px;">
+      context => {
+        const urlParams = context.state;
+
+        service.getDataForPage(urlParams.id)
+          .then(data => template.render(data))
+          .then(html => <mark>context.response.end(html)</mark>);
+      }
+    </code>
+  </pre>
+</section>
+
+<section class="slide">
+  <h2>Что не так?</h2>
+  <ul>
+    <li>HTML документ буферизуется в памяти</li>
+    <li>Пользователь долго не получает ни одного байта</li>
+    <li>При большом кол-ве запросов в БД пользователь будет очень долго ждать</li>
+    <li>Очень долго...</li>
+  </ul>
+</section>
+
+<section class="slide">
+  <img src="pictures/angry.gif" width="100%">
+</section>
+
+<section class="slide">
+  <h2>Решение прямиком из 1997</h2>
+  <p>
+    <b>RFC 2068. HTTP/1.1</b>
+  </p>
+  <p>
+    "The <b>chunked encoding</b> modifies the body of a message in order to transfer it as a series of chunks,
+    each with its own size indicator, followed by an optional footer containing entity-header fields.
+    This allows dynamically-produced content to be transferred along with the information necessary for
+    the recipient to verify that it has received the full message."
+  </p>
+</section>
+
+<section class="slide">
+  <h2 class="shout" style="font-size: 80px;">Это и есть <br /> прогрессивный рендер</h2>
+</section>
+
+<section class="slide">
+  <h2 class="shout" style="font-size: 100px;">Как это работает?</h2>
+</section>
+
+<section class="slide">
+  <img src="pictures/progressive_render.gif" width="100%">
+</section>
+
+<section class="slide">
+  <h2>Сайт с прогрессивным рендером</h2>
+  <img src="pictures/timeline.png" width="100%">
+</section>
+
+<section class="slide">
+  <h2 class="shout" style="font-size: 100px;">Как сделать это?</h2>
+</section>
+
+<section class="slide">
+  <h2>Улучшим код предыдущего примера</h2>
+  <pre style="font-size: 15px; margin-top: -25px;">
+    <code class="javascript" style="margin-left: -150px">
+      context => {
+        service.getMetaData(context)
+          .then(meta => {
+            <mark>context.response.write(template.render('header', meta)));</mark>
+            return service.getMenuData(context);
+          })
+          .then(data => {
+            <mark>context.response.write(template.render('menu', data)));</mark>
+            return service.getContent(context);
+          })
+          .then(data => template.render('content', data))
+          /* рендер других компонентов */
+          .then(() => <mark>context.response.end()</mark>);
+      }
+    </code>
+  </pre>
+</section>
+
+<section class="slide">
+  <img src="pictures/klarkson.gif" width="100%"/>
+</section>
+
+<section class="slide">
+  <h2>Преимущества</h2>
+  <ul>
+    <li>HTML не буферизуется в памяти</li>
+    <li>Низкий TTFB</li>
+    <li>Браузер раньше начинает загружать код и стили</li>
+  </ul>
+</section>
+
+<section class="slide">
+  <h2 class="shout" style="font-size: 100px;">Клиентский рендер</h2>
+</section>
+
+<section class="slide">
+  <h2>Решения уже используются</h2>
+  <ul>
+    <li>Single Page Application</li>
+    <li>Placeholder (Proxy object)</li>
+    <li>Подгрузка некоторых частей после серверного рендера</li>
+  </ul>
+</section>
+
+<section class="slide">
+  <h2>В итоге... </h2>
+  <ul>
+    <li>Мы снижаем кол-во потребляемой ресурсов</li>
+    <li>Первые байты контента доходя очень быстро</li>
+    <li>Пользователь думает, что все молнейносно</li>
+  </ul>
+</section>
+
+<section class="slide">
+  <h2 class="shout" style="font-size: 100px;">Спасибушки :D</h2>
+</section>
+
+<div class="progress"></div>
+
+<script src="node_modules/shower-core/shower.min.js"></script>
+
+</body>
+</html>
