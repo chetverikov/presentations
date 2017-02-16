@@ -129,15 +129,18 @@
 
 <section class="slide">
   <h2>Решение прямиком из 1997</h2>
-  <p>
-    <b>RFC 2068. HTTP/1.1</b>
-  </p>
-  <p>
-    "The <b>chunked encoding</b> modifies the body of a message in order to transfer it as a series of chunks,
-    each with its own size indicator, followed by an optional footer containing entity-header fields.
-    This allows dynamically-produced content to be transferred along with the information necessary for
-    the recipient to verify that it has received the full message."
-  </p>
+  <figure>
+    <blockquote>
+      "The <b>chunked encoding</b> modifies the body of a message in order to transfer it as a series of chunks,
+      each with its own size indicator, followed by an optional footer containing entity-header fields.
+      This allows dynamically-produced content to be transferred along with the information necessary for
+      the recipient to verify that it has received the full message."
+    </blockquote>
+    <br />
+    <figcaption>
+      <b>RFC 2068. HTTP/1.1</b>
+    </figcaption>
+  </figure>
 </section>
 
 <section class="slide">
@@ -221,6 +224,16 @@
     <li>Первые байты контента доходя очень быстро</li>
     <li>Пользователь видит, что все молнейносно</li>
   </ul>
+</section>
+
+<section class="slide">
+  <h2>Главное</h2>
+  <figure>
+    <blockquote>
+      Не ждать все данные, а как можно скорее применять <br/>изменения и показывать пользователю
+    </blockquote>
+    <figcaption><br/>Принцип прогрессивного рендера</figcaption>
+  </figure>
 </section>
 
 <section class="slide">
